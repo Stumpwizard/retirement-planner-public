@@ -25,7 +25,9 @@ assert.ok(check('fundForSleeve("us").expense')>0,'selected fund has expense meta
 assert.ok(html.includes('FSKAX') && html.includes('FTIHX') && html.includes('FXNAX') && html.includes('FUMBX'),'fund selection catalog');
 assert.ok(html.includes("ticker:'FXAIX',name:'500 Index',returns:[20.36,21.03,12.78,15.36]"),'FXAIX performance loaded');
 assert.ok(html.includes("ticker:'FZILX',name:'ZERO International Index',returns:[28.05,20.79,9.80,null]"),'FZILX performance loaded');
-assert.ok(html.includes('selectedFunds[key]=el.value;renderPortfolioBuilder();render()'),'fund change refreshes performance and projections');
+assert.ok(html.includes("document.getElementById('fundChoices').addEventListener('change'"),'delegated fund change listener');
+assert.ok(html.includes("cells[i+3].textContent"),'fund change updates return cells');
+assert.ok(html.includes("localStorage.setItem('retirement-planner-selected-funds'"),'fund choice persists');
 assert.ok(check('simulate("growth").rows.every(r=>r.end>=0 && r.shortfall>=0)'),'nonnegative balances');
 assert.ok(check('simulate("balanced").rows.every(r=>Math.abs(r.taxDetail.total-r.taxes)<0.01)'),'tax detail reconciliation');
 assert.ok(check('simulate("balanced",true).rows.every(r=>Number.isFinite(r.end))'),'stress test finite');
