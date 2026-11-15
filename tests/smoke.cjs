@@ -1,6 +1,6 @@
 const fs=require('node:fs');const vm=require('node:vm');const assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8');
-assert.match(html,/<table id="taxDetail"/);assert.match(html,/<select id="modelChoice"/);assert.match(html,/<table id="fundChoices"/);assert.match(html,/<th>Balanced HSA<\/th>/);assert.match(html,/<th>Growth realized gains<\/th>/);
+assert.match(html,/<table id="taxDetail"/);assert.match(html,/function makeHelp\(/);assert.match(html,/aria-expanded/);assert.match(html,/help-wrap:hover/);assert.match(html,/modelHelp/);assert.match(html,/taxHelp/);assert.match(html,/<select id="modelChoice"/);assert.match(html,/<table id="fundChoices"/);assert.match(html,/<th>Balanced HSA<\/th>/);assert.match(html,/<th>Growth realized gains<\/th>/);
 const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];assert.ok(script,'inline script exists');
 new vm.Script(script); // Syntax check
 const catalog=script.slice(script.indexOf('const portfolioModels='),script.indexOf('const defaults='));
