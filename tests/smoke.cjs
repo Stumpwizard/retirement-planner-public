@@ -1,9 +1,9 @@
 const fs=require('node:fs');const vm=require('node:vm');const assert=require('node:assert/strict');
 const html=fs.readFileSync('index.html','utf8');
-assert.match(html,/<table id="taxDetail"/);assert.match(html,/<th>Balanced HSA<\/th>/);assert.match(html,/<th>Growth realized gains<\/th>/);
+assert.match(html,/<table id="taxDetail"/);assert.match(html,/<select id="modelChoice"/);assert.match(html,/<table id="fundChoices"/);assert.match(html,/<th>Balanced HSA<\/th>/);assert.match(html,/<th>Growth realized gains<\/th>/);
 const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];assert.ok(script,'inline script exists');
 new vm.Script(script); // Syntax check
-const cut=script.slice(0,script.indexOf('let latest={}'));
+const cut=script.slice(script.indexOf('const defaults='),script.indexOf('let latest={}'));
 const context={localStorage:{getItem:()=>null},document:{getElementById:()=>({appendChild(){}}),createElement:()=>({})}};
 vm.createContext(context);vm.runInContext(cut,context);
 const check=(expression)=>vm.runInContext(expression,context);
@@ -14,6 +14,7 @@ assert.equal(check('incomeTax(0,0,1000,2026,64).federal'),0,'standard deduction 
 assert.ok(check('incomeTax(0,0,100000,2026,64).gainsTax')>0,'taxable capital gains');
 assert.ok(check('incomeTax(0,0,250000,2026,64).niit')>0,'NIIT at high income');
 assert.ok(check('simulate("balanced").rows.length')>=25,'retirement horizon');
+assert.ok(html.includes('FSKAX') && html.includes('FTIHX') && html.includes('FXNAX') && html.includes('FUMBX'),'fund selection catalog');
 assert.ok(check('simulate("growth").rows.every(r=>r.end>=0 && r.shortfall>=0)'),'nonnegative balances');
 assert.ok(check('simulate("balanced").rows.every(r=>Math.abs(r.taxDetail.total-r.taxes)<0.01)'),'tax detail reconciliation');
 assert.ok(check('simulate("balanced",true).rows.every(r=>Number.isFinite(r.end))'),'stress test finite');
