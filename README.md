@@ -31,7 +31,11 @@ Brokerage sales realize gains proportional to the entered cost basis. Federal or
 Run `node tests/smoke.cjs` from the repository root. The Pages deployment workflow runs this check before uploading the site. It tests JavaScript syntax, account handling, selected tax calculations, shortfall constraints, baseline and downturn outputs. A successful workflow is required before considering a release verified. These automated checks do not validate tax-law completeness, actual browser rendering, or retirement forecasting accuracy.
 
 ## Known modeling limitations
-- The engine uses annual lump-sum cash flow and annual return compounding rather than true monthly withdrawals; it cannot precisely quantify sequence-of-returns risk.
+- The engine now models monthly withdrawals and monthly-compounded investment returns. Annual tax budgets and year-end reconciliation remain approximations; the downturn scenario is illustrative rather than a probability distribution.
 - Brokerage sales assume proportional basis and long-term gains, and do not model dividends, short-term gains or capital-loss carryovers.
 - State/county income tax and RMD calculations are approximations; tax-law changes and other income are excluded.
 - HSA balances are earmarked for qualified medical expenses only; a remaining HSA does not eliminate general spending shortfalls.
+
+
+## Monthly projection update
+Cash withdrawals are now applied each month before monthly investment growth. Social Security begins in the selected month; qualified medical spending may be funded from the HSA; taxable brokerage proceeds are tracked with proportional basis; IRA and Roth funds are used afterward. Annual tax estimates are budgeted monthly and reconciled at year end. The resulting forecasts remain approximations because tax timing, intra-year asset-class paths, dividends, health insurance, and future law are not fully modeled.
