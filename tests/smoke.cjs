@@ -1,0 +1,24 @@
+const fs=require('node:fs');const vm=require('node:vm');const assert=require('node:assert/strict');
+const html=fs.readFileSync('index.html','utf8');
+assert.match(html,/<table id="taxDetail"/);assert.match(html,/<th>Balanced HSA<\/th>/);assert.match(html,/<th>Growth realized gains<\/th>/);
+const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];assert.ok(script,'inline script exists');
+new vm.Script(script); // Syntax check
+const cut=script.slice(0,script.indexOf('let latest={}'));
+const context={localStorage:{getItem:()=>null},document:{getElementById:()=>({appendChild(){}}),createElement:()=>({})}};
+vm.createContext(context);vm.runInContext(cut,context);
+const check=(expression)=>vm.runInContext(expression,context);
+assert.equal(check('taxableSS(10000,0)'),0,'no taxable SS below threshold');
+assert.ok(Math.abs(check('taxableSS(30000,40000)')-25500)<.01,'85 percent SS ceiling');
+assert.equal(check('incomeTax(0,0,0,2026,64).total'),0,'zero income tax');
+assert.equal(check('incomeTax(0,0,1000,2026,64).federal'),0,'standard deduction shelters gains');
+assert.ok(check('incomeTax(0,0,100000,2026,64).gainsTax')>0,'taxable capital gains');
+assert.ok(check('incomeTax(0,0,250000,2026,64).niit')>0,'NIIT at high income');
+assert.ok(check('simulate("balanced").rows.length')>=25,'retirement horizon');
+assert.ok(check('simulate("growth").rows.every(r=>r.end>=0 && r.shortfall>=0)'),'nonnegative balances');
+assert.ok(check('simulate("balanced").rows.every(r=>Math.abs(r.taxDetail.total-r.taxes)<0.01)'),'tax detail reconciliation');
+assert.ok(check('simulate("balanced",true).rows.every(r=>Number.isFinite(r.end))'),'stress test finite');
+vm.runInContext('cfg={...cfg,traditional:0,roth:0,brokerage:0,hsa:100000,medical:0,spending:40000,ss:0}',context);
+assert.ok(check('simulate("balanced").rows[0].shortfall')>0,'HSA cannot pay nonmedical bills');
+vm.runInContext('cfg={...cfg,traditional:0,roth:0,brokerage:100000,brokerageBasis:70000,hsa:0,spending:20000,ss:0}',context);
+assert.ok(check('simulate("balanced").rows[0].gains')>0,'brokerage realizes capital gains');
+console.log('Retirement planner checks passed: syntax, tables, federal tax, Social Security, capital gains, NIIT, account limits, baseline and stress.');
