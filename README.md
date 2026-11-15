@@ -16,3 +16,8 @@ Deterministic educational projections, not validated financial or tax advice. Ta
 
 ## Publish
 Create a **new public repository** named `retirement-planner-public`, upload these files, then select **Settings → Pages → Source: GitHub Actions**. The included workflow deploys `index.html`.
+
+## Additional account types
+- **HSA:** Editable balance and annual qualified medical spending (medical spending is included in the overall annual spending budget). HSA withdrawals are limited to this qualified-medical budget in the projection.
+- **Taxable brokerage:** Editable account balance and cost basis, with withdrawals used before IRA withdrawals. The calculator currently does **not** compute capital gains tax on brokerage sales, dividend taxes, or HSA nonqualified distributions. Results involving brokerage balances are preliminary and may understate tax and withdrawal needs.
+- The annual projection includes separate year-end HSA and brokerage balances for both strategies; all defaults are fictional and set to $0 for the new accounts.
