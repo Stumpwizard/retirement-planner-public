@@ -18,7 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Validate calculator logic\n        run: node tests/smoke.cjs\n      - uses: actions/configure-pages@v5
+      - name: Validate calculator logic
+        run: node tests/smoke.cjs
+      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .
