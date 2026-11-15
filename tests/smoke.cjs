@@ -8,7 +8,7 @@ const context={localStorage:{getItem:()=>null},document:{getElementById:()=>({ap
 vm.createContext(context);vm.runInContext(cut,context);
 const check=(expression)=>vm.runInContext(expression,context);
 assert.equal(check('taxableSS(10000,0)'),0,'no taxable SS below threshold');
-assert.ok(Math.abs(check('taxableSS(30000,40000)')-25500)<.01,'85 percent SS ceiling');
+assert.ok(Math.abs(check('taxableSS(30000,40000)')-22350)<.01,'provisional income SS calculation');
 assert.equal(check('incomeTax(0,0,0,2026,64).total'),0,'zero income tax');
 assert.equal(check('incomeTax(0,0,1000,2026,64).federal'),0,'standard deduction shelters gains');
 assert.ok(check('incomeTax(0,0,100000,2026,64).gainsTax')>0,'taxable capital gains');
