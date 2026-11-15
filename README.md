@@ -25,3 +25,13 @@ Create a **new public repository** named `retirement-planner-public`, upload the
 
 ## Tax model update
 Brokerage sales realize gains proportional to the entered cost basis. Federal ordinary income and long-term capital gains brackets, Social Security provisional-income taxation, an estimated age-65 deduction, state/county income taxes and a simplified net investment income tax are included. The model assumes all gains are long-term and uses illustrative inflation-indexed 2026 thresholds; it does not replicate a tax return. Required minimum distributions are approximated and any excess is reinvested in taxable brokerage. The first retirement year's wages and detailed federal senior deductions, Indiana exemptions, dividend taxes, Medicare and ACA effects are not modeled. Results remain preliminary.
+
+
+## Regression tests and deployment gate
+Run `node tests/smoke.cjs` from the repository root. The Pages deployment workflow runs this check before uploading the site. It tests JavaScript syntax, account handling, selected tax calculations, shortfall constraints, baseline and downturn outputs. A successful workflow is required before considering a release verified. These automated checks do not validate tax-law completeness, actual browser rendering, or retirement forecasting accuracy.
+
+## Known modeling limitations
+- The engine uses annual lump-sum cash flow and annual return compounding rather than true monthly withdrawals; it cannot precisely quantify sequence-of-returns risk.
+- Brokerage sales assume proportional basis and long-term gains, and do not model dividends, short-term gains or capital-loss carryovers.
+- State/county income tax and RMD calculations are approximations; tax-law changes and other income are excluded.
+- HSA balances are earmarked for qualified medical expenses only; a remaining HSA does not eliminate general spending shortfalls.
