@@ -6,7 +6,8 @@ new vm.Script(script); // Syntax check
 const catalog=script.slice(script.indexOf('const portfolioModels='),script.indexOf('const defaults='));
 const cut=script.slice(script.indexOf('const defaults='),script.indexOf('let latest={}'));
 const modelDefinitions=catalog.slice(0,catalog.indexOf('function renderPortfolioBuilder()'));
-const context={localStorage:{getItem:()=>null},document:{getElementById:()=>({value:'balanced',appendChild(){}}),createElement:()=>({}),addEventListener:()=>{}}};
+const element=()=>({value:'balanced',className:'',classList:{contains:()=>false,add(){},remove(){},toggle(){}},append(){},appendChild(){},setAttribute(){},addEventListener(){},querySelector(){return element()},blur(){},parentElement:{appendChild(){}},textContent:''});
+const context={localStorage:{getItem:()=>null},document:{getElementById:()=>element(),createElement:()=>element(),createTextNode:(text)=>({textContent:text}),addEventListener:()=>{},querySelectorAll:()=>[]}};
 vm.createContext(context);vm.runInContext(modelDefinitions+cut,context);
 const check=(expression)=>vm.runInContext(expression,context);
 assert.equal(check('taxableSS(10000,0)'),0,'no taxable SS below threshold');
