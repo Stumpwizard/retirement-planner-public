@@ -5,7 +5,7 @@ const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];assert.ok(script,'i
 new vm.Script(script); // Syntax check
 const catalog=script.slice(script.indexOf('const portfolioModels='),script.indexOf('const defaults='));
 const cut=script.slice(script.indexOf('const defaults='),script.indexOf('let latest={}'));
-const modelDefinitions=catalog.slice(0,catalog.indexOf('const fundCatalog='));
+const modelDefinitions=catalog.slice(0,catalog.indexOf('function renderPortfolioBuilder()'));
 const context={localStorage:{getItem:()=>null},document:{getElementById:()=>({value:'balanced',appendChild(){}}),createElement:()=>({})}};
 vm.createContext(context);vm.runInContext(modelDefinitions+cut,context);
 const check=(expression)=>vm.runInContext(expression,context);
@@ -18,6 +18,9 @@ assert.ok(check('incomeTax(0,0,250000,2026,64).niit')>0,'NIIT at high income');
 assert.ok(check('simulate("balanced").rows.length')>=25,'retirement horizon');
 assert.ok(check('simulate("selected").rows.length')>=25,'selected portfolio horizon');
 assert.ok(check('simulate("selected").rows.every(r=>Number.isFinite(r.end))'),'selected model finite');
+assert.ok(check('selectedFee().known')>0,'known fund expense deducted');
+assert.ok(check('selectedFee().missing.includes("cash")'),'unverified cash expense disclosed');
+assert.ok(check('fundForSleeve("us").expense')>0,'selected fund has expense metadata');
 assert.ok(html.includes('FSKAX') && html.includes('FTIHX') && html.includes('FXNAX') && html.includes('FUMBX'),'fund selection catalog');
 assert.ok(check('simulate("growth").rows.every(r=>r.end>=0 && r.shortfall>=0)'),'nonnegative balances');
 assert.ok(check('simulate("balanced").rows.every(r=>Math.abs(r.taxDetail.total-r.taxes)<0.01)'),'tax detail reconciliation');
