@@ -19,5 +19,9 @@ Create a **new public repository** named `retirement-planner-public`, upload the
 
 ## Additional account types
 - **HSA:** Editable balance and annual qualified medical spending (medical spending is included in the overall annual spending budget). HSA withdrawals are limited to this qualified-medical budget in the projection.
-- **Taxable brokerage:** Editable account balance and cost basis, with withdrawals used before IRA withdrawals. The calculator currently does **not** compute capital gains tax on brokerage sales, dividend taxes, or HSA nonqualified distributions. Results involving brokerage balances are preliminary and may understate tax and withdrawal needs.
+- **Taxable brokerage:** Editable account balance and cost basis, with withdrawals used before IRA withdrawals. The calculator estimates long-term capital gains on brokerage sales using proportional cost basis and simplified federal/Indiana rates. It does **not** model dividend/interest taxes, short-term capital gains, capital-loss carryforwards, or HSA nonqualified distributions. Results involving brokerage balances are preliminary and may understate tax and withdrawal needs.
 - The annual projection includes separate year-end HSA and brokerage balances for both strategies; all defaults are fictional and set to $0 for the new accounts.
+
+
+## Tax model update
+Brokerage sales realize gains proportional to the entered cost basis. Federal ordinary income and long-term capital gains brackets, Social Security provisional-income taxation, an estimated age-65 deduction, state/county income taxes and a simplified net investment income tax are included. The model assumes all gains are long-term and uses illustrative inflation-indexed 2026 thresholds; it does not replicate a tax return. Required minimum distributions are approximated and any excess is reinvested in taxable brokerage. The first retirement year's wages and detailed federal senior deductions, Indiana exemptions, dividend taxes, Medicare and ACA effects are not modeled. Results remain preliminary.
