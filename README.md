@@ -39,3 +39,7 @@ Run `node tests/smoke.cjs` from the repository root. The Pages deployment workfl
 
 ## Monthly projection update
 Cash withdrawals are now applied each month before monthly investment growth. Social Security begins in the selected month; qualified medical spending may be funded from the HSA; taxable brokerage proceeds are tracked with proportional basis; IRA and Roth funds are used afterward. Annual tax estimates are budgeted monthly and reconciled at year end. The resulting forecasts remain approximations because tax timing, intra-year asset-class paths, dividends, health insurance, and future law are not fully modeled.
+
+
+## Portfolio Builder (November 2026)
+Choose Conservative (40/48/12), Balanced Retirement (50/40/10), Moderate Growth (60/35/5), or Growth (75/20/5). The selector displays target asset sleeve percentages and Fidelity mutual-fund options. Verified fund historical average annual total returns for 1, 3, 5 and 10 years are displayed as of August 31, 2026 for FSKAX, FTIHX, FXNAX, and FUMBX, with links to Fidelity's source pages. Unverified alternatives show a dash rather than invented returns. Money market yield history is not displayed as comparable total return. The fund picker is informational and does not change the existing Balanced-vs-Moderate retirement projections or execute trades; model return assumptions remain independent of historical returns.
