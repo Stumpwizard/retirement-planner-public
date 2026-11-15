@@ -3,9 +3,11 @@ const html=fs.readFileSync('index.html','utf8');
 assert.match(html,/<table id="taxDetail"/);assert.match(html,/<select id="modelChoice"/);assert.match(html,/<table id="fundChoices"/);assert.match(html,/<th>Balanced HSA<\/th>/);assert.match(html,/<th>Growth realized gains<\/th>/);
 const script=html.match(/<script>([\s\S]*?)<\/script>/)?.[1];assert.ok(script,'inline script exists');
 new vm.Script(script); // Syntax check
+const catalog=script.slice(script.indexOf('const portfolioModels='),script.indexOf('const defaults='));
 const cut=script.slice(script.indexOf('const defaults='),script.indexOf('let latest={}'));
-const context={localStorage:{getItem:()=>null},document:{getElementById:()=>({appendChild(){}}),createElement:()=>({})}};
-vm.createContext(context);vm.runInContext(cut,context);
+const modelDefinitions=catalog.slice(0,catalog.indexOf('const fundCatalog='));
+const context={localStorage:{getItem:()=>null},document:{getElementById:()=>({value:'balanced',appendChild(){}}),createElement:()=>({})}};
+vm.createContext(context);vm.runInContext(modelDefinitions+cut,context);
 const check=(expression)=>vm.runInContext(expression,context);
 assert.equal(check('taxableSS(10000,0)'),0,'no taxable SS below threshold');
 assert.ok(Math.abs(check('taxableSS(30000,40000)')-22350)<.01,'provisional income SS calculation');
@@ -14,6 +16,8 @@ assert.equal(check('incomeTax(0,0,1000,2026,64).federal'),0,'standard deduction 
 assert.ok(check('incomeTax(0,0,100000,2026,64).gainsTax')>0,'taxable capital gains');
 assert.ok(check('incomeTax(0,0,250000,2026,64).niit')>0,'NIIT at high income');
 assert.ok(check('simulate("balanced").rows.length')>=25,'retirement horizon');
+assert.ok(check('simulate("selected").rows.length')>=25,'selected portfolio horizon');
+assert.ok(check('simulate("selected").rows.every(r=>Number.isFinite(r.end))'),'selected model finite');
 assert.ok(html.includes('FSKAX') && html.includes('FTIHX') && html.includes('FXNAX') && html.includes('FUMBX'),'fund selection catalog');
 assert.ok(check('simulate("growth").rows.every(r=>r.end>=0 && r.shortfall>=0)'),'nonnegative balances');
 assert.ok(check('simulate("balanced").rows.every(r=>Math.abs(r.taxDetail.total-r.taxes)<0.01)'),'tax detail reconciliation');
